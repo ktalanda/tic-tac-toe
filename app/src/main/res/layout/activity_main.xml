@@ -7,13 +7,13 @@
     tools:context="io.github.ktalanda.tictactoe.MainActivity">
 
     <GridView
-        android:id="@+id/playground"
+        android:id="@+id/gameBoard"
         android:layout_width="@dimen/playground_size"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:background="@android:color/black"
         android:horizontalSpacing="@dimen/playground_spacing"
         android:numColumns="3"
-        android:verticalSpacing="1dp">
+        android:verticalSpacing="@dimen/playground_spacing">
     </GridView>
 </FrameLayout>
