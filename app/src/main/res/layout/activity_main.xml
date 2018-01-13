@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="io.github.ktalanda.tictactoe.MainActivity">
+
+    <GridView
+        android:id="@+id/playground"
+        android:layout_width="@dimen/playground_size"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@android:color/black"
+        android:horizontalSpacing="@dimen/playground_spacing"
+        android:numColumns="3"
+        android:verticalSpacing="1dp">
+    </GridView>
+</FrameLayout>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="playfield_size">130dp</dimen>
+    <dimen name="playfield_text_size">30sp</dimen>
+    <dimen name="playground_size">390dp</dimen>
+    <dimen name="playground_spacing">1dp</dimen>
+</resources>
