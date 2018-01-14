@@ -76,4 +76,29 @@ class MainPresenterTest {
                         arrayOf(FieldType.NONE, FieldType.NONE, FieldType.NONE),
                         arrayOf(FieldType.NONE, FieldType.NONE, FieldType.NONE, FieldType.NONE)))
     }
+
+    @Test
+    fun whenClickField_thenChangePlayer() {
+        presenter.currentPlayerState = FieldType.X
+        presenter.clickField(0)
+        Assert.assertEquals(FieldType.O, presenter.currentPlayerState)
+    }
+
+    @Test
+    fun givenX_whenNextPlayer_thenReturnO() {
+        val actual = presenter.nextPlayer(FieldType.X)
+        Assert.assertEquals(FieldType.O, actual)
+    }
+
+    @Test
+    fun givenO_whenNextPlayer_thenReturnX() {
+        val actual = presenter.nextPlayer(FieldType.O)
+        Assert.assertEquals(FieldType.X, actual)
+    }
+
+    @Test
+    fun givenNone_whenNextPlayer_thenReturnX() {
+        val actual = presenter.nextPlayer(FieldType.NONE)
+        Assert.assertEquals(FieldType.X, actual)
+    }
 }

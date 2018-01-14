@@ -15,6 +15,8 @@ class MainActivity(private val presenter: MainPresenter = MainPresenter)
         presenter.bindView(this)
 
         presenter.reloadGameBoard(presenter.gameBoardState)
+
+        gameBoard.setOnItemClickListener { _, _, position, _ -> presenter.clickField(position) }
     }
 
     override fun reloadGameBoard(playgroundViewElements: List<String>) {
