@@ -76,4 +76,11 @@ class MainPresenterTest {
                         arrayOf(FieldType.NONE, FieldType.NONE, FieldType.NONE),
                         arrayOf(FieldType.NONE, FieldType.NONE, FieldType.NONE, FieldType.NONE)))
     }
+
+    @Test
+    fun givenNone_whenNextPlayer_thenReturnX() {
+        Assert.assertEquals("X should be next after NONE", FieldType.X, presenter.nextPlayer(FieldType.NONE))
+        Assert.assertEquals("O should be next after X", FieldType.O, presenter.nextPlayer(FieldType.X))
+        Assert.assertEquals("X should be next after O", FieldType.X, presenter.nextPlayer(FieldType.O))
+    }
 }

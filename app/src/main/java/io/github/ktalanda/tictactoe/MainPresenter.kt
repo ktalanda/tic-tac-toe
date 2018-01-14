@@ -2,6 +2,7 @@ package io.github.ktalanda.tictactoe
 
 object MainPresenter {
     var gameBoardState: Array<Array<FieldType>>
+    var currentPlayerState: FieldType
 
     private val cleanGameBoard = arrayOf(
             arrayOf(FieldType.NONE, FieldType.NONE, FieldType.NONE),
@@ -11,6 +12,7 @@ object MainPresenter {
 
     init {
         gameBoardState = cleanGameBoard
+        currentPlayerState = FieldType.X
     }
 
     fun bindView(view: View) {
@@ -24,6 +26,16 @@ object MainPresenter {
         this.gameBoardState = playgroundState
         view.reloadGameBoard(playgroundState.flatMap { it.map { it.type } })
     }
+
+    fun clickField(position: Int) {
+        currentPlayerState = nextPlayer(currentPlayerState)
+    }
+
+    fun nextPlayer(player: FieldType): FieldType =
+            when (player) {
+                FieldType.X -> FieldType.O
+                else -> FieldType.X
+            }
 
     class ArrayWrongSizeException : Exception()
 
