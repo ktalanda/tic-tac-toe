@@ -1,5 +1,6 @@
 package io.github.ktalanda.tictactoe
 
+import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.times
 import com.nhaarman.mockito_kotlin.verify
 import org.junit.Assert
@@ -12,12 +13,12 @@ import org.mockito.junit.MockitoJUnitRunner
 @RunWith(MockitoJUnitRunner::class)
 class MainPresenterTest {
 
-    @Mock private lateinit var view: MainPresenter.View
+    @Mock private lateinit var viewMock: MainPresenter.View
     private val presenter: MainPresenter = MainPresenter
 
     @Before
     fun setUp() {
-        presenter.bindView(view)
+        presenter.bindView(viewMock)
     }
 
     @Test
@@ -29,7 +30,7 @@ class MainPresenterTest {
                         arrayOf(FieldType.X, FieldType.NONE, FieldType.NONE)
                 )
         )
-        verify(view, times(1)).reloadGameBoard(listOf("x", "x", "o", "o", "", "", "x", "", ""))
+        verify(viewMock, times(1)).reloadGameBoard(listOf("x", "x", "o", "o", "", "", "x", "", ""))
         Assert.assertTrue(presenter.gameBoardState[0]
                 .contentEquals(arrayOf(FieldType.X, FieldType.X, FieldType.O)))
         Assert.assertTrue(presenter.gameBoardState[1]
@@ -44,7 +45,7 @@ class MainPresenterTest {
                         arrayOf(FieldType.O, FieldType.NONE, FieldType.NONE)
                 )
         )
-        verify(view, times(1)).reloadGameBoard(listOf("o", "o", "o", "x", "", "", "o", "", ""))
+        verify(viewMock, times(1)).reloadGameBoard(listOf("o", "o", "o", "x", "", "", "o", "", ""))
         Assert.assertTrue(presenter.gameBoardState[0]
                 .contentEquals(arrayOf(FieldType.O, FieldType.O, FieldType.O)))
         Assert.assertTrue(presenter.gameBoardState[1]
@@ -82,5 +83,30 @@ class MainPresenterTest {
         Assert.assertEquals("X should be next after NONE", FieldType.X, presenter.nextPlayer(FieldType.NONE))
         Assert.assertEquals("O should be next after X", FieldType.O, presenter.nextPlayer(FieldType.X))
         Assert.assertEquals("X should be next after O", FieldType.X, presenter.nextPlayer(FieldType.O))
+    }
+
+    @Test
+    fun givenValidPosition_whenClickField_thenUpdateGameBoardState() {
+        presenter.gameBoardState = presenter.cleanGameBoard
+        presenter.currentPlayerState = FieldType.X
+        presenter.clickField(1)
+        presenter.clickField(3)
+        Assert.assertTrue(presenter.gameBoardState[0]
+                .contentEquals(arrayOf(FieldType.NONE, FieldType.X, FieldType.NONE)))
+        Assert.assertTrue(presenter.gameBoardState[1]
+                .contentEquals(arrayOf(FieldType.O, FieldType.NONE, FieldType.NONE)))
+        Assert.assertTrue(presenter.gameBoardState[2]
+                .contentEquals(arrayOf(FieldType.NONE, FieldType.NONE, FieldType.NONE)))
+    }
+
+    @Test(expected = ArrayIndexOutOfBoundsException::class)
+    fun givenToBigInvalidPosition_whenClickField_thenThrowsException() {
+        presenter.clickField(9)
+    }
+
+    @Test
+    fun whenClickField_shouldReloadGameboardOnView() {
+        presenter.clickField(1)
+        verify(viewMock, times(1)).reloadGameBoard(any())
     }
 }

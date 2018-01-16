@@ -4,7 +4,7 @@ object MainPresenter {
     var gameBoardState: Array<Array<FieldType>>
     var currentPlayerState: FieldType
 
-    private val cleanGameBoard = arrayOf(
+    val cleanGameBoard = arrayOf(
             arrayOf(FieldType.NONE, FieldType.NONE, FieldType.NONE),
             arrayOf(FieldType.NONE, FieldType.NONE, FieldType.NONE),
             arrayOf(FieldType.NONE, FieldType.NONE, FieldType.NONE))
@@ -12,7 +12,7 @@ object MainPresenter {
 
     init {
         gameBoardState = cleanGameBoard
-        currentPlayerState = FieldType.X
+        currentPlayerState = FieldType.NONE
     }
 
     fun bindView(view: View) {
@@ -28,6 +28,11 @@ object MainPresenter {
     }
 
     fun clickField(position: Int) {
+        val clickedColumn = position / 3
+        val clickedRow = position % 3
+        gameBoardState[clickedColumn][clickedRow] = currentPlayerState
+        reloadGameBoard(gameBoardState)
+
         currentPlayerState = nextPlayer(currentPlayerState)
     }
 
