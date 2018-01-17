@@ -12,7 +12,7 @@ object MainPresenter {
 
     init {
         gameBoardState = cleanGameBoard
-        currentPlayerState = FieldType.NONE
+        currentPlayerState = FieldType.X
     }
 
     fun bindView(view: View) {
@@ -30,9 +30,11 @@ object MainPresenter {
     fun clickField(position: Int) {
         val clickedColumn = position / 3
         val clickedRow = position % 3
+
+        if (gameBoardState[clickedColumn][clickedRow] != FieldType.NONE) return
+
         gameBoardState[clickedColumn][clickedRow] = currentPlayerState
         reloadGameBoard(gameBoardState)
-
         currentPlayerState = nextPlayer(currentPlayerState)
     }
 
