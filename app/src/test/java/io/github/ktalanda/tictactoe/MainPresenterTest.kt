@@ -19,6 +19,10 @@ class MainPresenterTest {
     @Before
     fun setUp() {
         presenter.bindView(viewMock)
+        presenter.gameBoardState = arrayOf(
+                arrayOf(FieldType.NONE, FieldType.NONE, FieldType.NONE),
+                arrayOf(FieldType.NONE, FieldType.NONE, FieldType.NONE),
+                arrayOf(FieldType.NONE, FieldType.NONE, FieldType.NONE))
     }
 
     @Test
@@ -87,7 +91,7 @@ class MainPresenterTest {
 
     @Test
     fun givenValidPosition_whenClickField_thenUpdateGameBoardState() {
-        presenter.gameBoardState = presenter.cleanGameBoard
+        presenter.gameBoardState = presenter.cleanGameBoard.clone()
         presenter.currentPlayerState = FieldType.X
         presenter.clickField(1)
         presenter.clickField(3)
@@ -105,8 +109,34 @@ class MainPresenterTest {
     }
 
     @Test
-    fun whenClickField_shouldReloadGameboardOnView() {
+    fun whenClickField_thenReloadsGameboardOnView() {
         presenter.clickField(1)
         verify(viewMock, times(1)).reloadGameBoard(any())
+    }
+
+    @Test
+    fun givenTakenField_whenClickField_thenDoesnotOverride() {
+        presenter.currentPlayerState = FieldType.X
+        presenter.gameBoardState =
+                arrayOf(
+                        arrayOf(FieldType.X, FieldType.O, FieldType.O),
+                        arrayOf(FieldType.O, FieldType.NONE, FieldType.NONE),
+                        arrayOf(FieldType.X, FieldType.NONE, FieldType.NONE)
+                )
+        presenter.clickField(1)
+        Assert.assertEquals(FieldType.O, presenter.gameBoardState[0][1])
+    }
+
+    @Test
+    fun givenTakenField_whenClickField_thenDoesnotChangePlayer() {
+        presenter.currentPlayerState = FieldType.X
+        presenter.gameBoardState =
+                arrayOf(
+                        arrayOf(FieldType.X, FieldType.O, FieldType.O),
+                        arrayOf(FieldType.O, FieldType.NONE, FieldType.NONE),
+                        arrayOf(FieldType.X, FieldType.NONE, FieldType.NONE)
+                )
+        presenter.clickField(1)
+        Assert.assertEquals(FieldType.X, presenter.currentPlayerState)
     }
 }
