@@ -19,67 +19,54 @@ class MainPresenterTest {
     @Before
     fun setUp() {
         presenter.bindView(viewMock)
-        presenter.gameBoardState = arrayOf(
-                arrayOf(FieldType.NONE, FieldType.NONE, FieldType.NONE),
-                arrayOf(FieldType.NONE, FieldType.NONE, FieldType.NONE),
-                arrayOf(FieldType.NONE, FieldType.NONE, FieldType.NONE))
+        presenter.gameBoardState = presenter.cleanGameBoard
     }
 
     @Test
-    fun whenReloadPlayground_thenShouldReloadViewAndUpdateState() {
-        presenter.reloadGameBoard(
-                arrayOf(
-                        arrayOf(FieldType.X, FieldType.X, FieldType.O),
-                        arrayOf(FieldType.O, FieldType.NONE, FieldType.NONE),
-                        arrayOf(FieldType.X, FieldType.NONE, FieldType.NONE)
-                )
+    fun whenReloadGameBoard_thenShouldReloadViewAndUpdateState() {
+        val gameBoardStateFirstFake = listOf(
+                listOf(FieldType.X, FieldType.X, FieldType.O),
+                listOf(FieldType.O, FieldType.NONE, FieldType.NONE),
+                listOf(FieldType.X, FieldType.NONE, FieldType.NONE)
         )
-        verify(viewMock, times(1)).reloadGameBoard(listOf("x", "x", "o", "o", "", "", "x", "", ""))
-        Assert.assertTrue(presenter.gameBoardState[0]
-                .contentEquals(arrayOf(FieldType.X, FieldType.X, FieldType.O)))
-        Assert.assertTrue(presenter.gameBoardState[1]
-                .contentEquals(arrayOf(FieldType.O, FieldType.NONE, FieldType.NONE)))
-        Assert.assertTrue(presenter.gameBoardState[2]
-                .contentEquals(arrayOf(FieldType.X, FieldType.NONE, FieldType.NONE)))
+        presenter.reloadGameBoard(gameBoardStateFirstFake)
 
-        presenter.reloadGameBoard(
-                arrayOf(
-                        arrayOf(FieldType.O, FieldType.O, FieldType.O),
-                        arrayOf(FieldType.X, FieldType.NONE, FieldType.NONE),
-                        arrayOf(FieldType.O, FieldType.NONE, FieldType.NONE)
-                )
+        verify(viewMock, times(1)).reloadGameBoard(listOf("x", "x", "o", "o", "", "", "x", "", ""))
+        Assert.assertEquals(gameBoardStateFirstFake, presenter.gameBoardState)
+
+        val gameBoardStateSecondFake = listOf(
+                listOf(FieldType.O, FieldType.O, FieldType.O),
+                listOf(FieldType.X, FieldType.NONE, FieldType.NONE),
+                listOf(FieldType.O, FieldType.NONE, FieldType.NONE)
         )
+        presenter.reloadGameBoard(gameBoardStateSecondFake)
+
         verify(viewMock, times(1)).reloadGameBoard(listOf("o", "o", "o", "x", "", "", "o", "", ""))
-        Assert.assertTrue(presenter.gameBoardState[0]
-                .contentEquals(arrayOf(FieldType.O, FieldType.O, FieldType.O)))
-        Assert.assertTrue(presenter.gameBoardState[1]
-                .contentEquals(arrayOf(FieldType.X, FieldType.NONE, FieldType.NONE)))
-        Assert.assertTrue(presenter.gameBoardState[2]
-                .contentEquals(arrayOf(FieldType.O, FieldType.NONE, FieldType.NONE)))
+        Assert.assertEquals(gameBoardStateSecondFake, presenter.gameBoardState)
     }
 
     @Test(expected = MainPresenter.ArrayWrongSizeException::class)
     fun givenArrayWithLessThan3Elements_whenReloadPlayground_thenThrowException() {
-        presenter.reloadGameBoard(arrayOf())
+        presenter.reloadGameBoard(listOf())
     }
 
     @Test(expected = MainPresenter.ArrayWrongSizeException::class)
     fun given3ArraysWithLessThan3Subelements_whenReloadPlayground_thenThrowException() {
-        presenter.reloadGameBoard(arrayOf(arrayOf(), arrayOf(), arrayOf()))
+        presenter.reloadGameBoard(listOf(listOf(), listOf(), listOf()))
     }
 
     @Test(expected = MainPresenter.ArrayWrongSizeException::class)
     fun givenArrayWithMoreThan3Elements_whenReloadPlayground_thenThrowException() {
-        presenter.reloadGameBoard(arrayOf(arrayOf(), arrayOf(), arrayOf(), arrayOf()))
+        presenter.reloadGameBoard(listOf(listOf(), listOf(), listOf(), listOf()))
     }
 
     @Test(expected = MainPresenter.ArrayWrongSizeException::class)
     fun given3ArraysWithMoreThan3Subelements_whenReloadPlayground_thenThrowException() {
         presenter.reloadGameBoard(
-                arrayOf(
-                        arrayOf(FieldType.NONE, FieldType.NONE, FieldType.NONE),
-                        arrayOf(FieldType.NONE, FieldType.NONE, FieldType.NONE),
-                        arrayOf(FieldType.NONE, FieldType.NONE, FieldType.NONE, FieldType.NONE)))
+                listOf(
+                        listOf(FieldType.NONE, FieldType.NONE, FieldType.NONE),
+                        listOf(FieldType.NONE, FieldType.NONE, FieldType.NONE),
+                        listOf(FieldType.NONE, FieldType.NONE, FieldType.NONE, FieldType.NONE)))
     }
 
     @Test
@@ -91,16 +78,17 @@ class MainPresenterTest {
 
     @Test
     fun givenValidPosition_whenClickField_thenUpdateGameBoardState() {
-        presenter.gameBoardState = presenter.cleanGameBoard.clone()
         presenter.currentPlayerState = FieldType.X
         presenter.clickField(1)
         presenter.clickField(3)
-        Assert.assertTrue(presenter.gameBoardState[0]
-                .contentEquals(arrayOf(FieldType.NONE, FieldType.X, FieldType.NONE)))
-        Assert.assertTrue(presenter.gameBoardState[1]
-                .contentEquals(arrayOf(FieldType.O, FieldType.NONE, FieldType.NONE)))
-        Assert.assertTrue(presenter.gameBoardState[2]
-                .contentEquals(arrayOf(FieldType.NONE, FieldType.NONE, FieldType.NONE)))
+
+        val expected = listOf(
+                listOf(FieldType.NONE, FieldType.X, FieldType.NONE),
+                listOf(FieldType.O, FieldType.NONE, FieldType.NONE),
+                listOf(FieldType.NONE, FieldType.NONE, FieldType.NONE)
+        )
+
+        Assert.assertEquals(expected, presenter.gameBoardState)
     }
 
     @Test(expected = ArrayIndexOutOfBoundsException::class)
@@ -118,10 +106,10 @@ class MainPresenterTest {
     fun givenTakenField_whenClickField_thenDoesnotOverride() {
         presenter.currentPlayerState = FieldType.X
         presenter.gameBoardState =
-                arrayOf(
-                        arrayOf(FieldType.X, FieldType.O, FieldType.O),
-                        arrayOf(FieldType.O, FieldType.NONE, FieldType.NONE),
-                        arrayOf(FieldType.X, FieldType.NONE, FieldType.NONE)
+                listOf(
+                        listOf(FieldType.X, FieldType.O, FieldType.O),
+                        listOf(FieldType.O, FieldType.NONE, FieldType.NONE),
+                        listOf(FieldType.X, FieldType.NONE, FieldType.NONE)
                 )
         presenter.clickField(1)
         Assert.assertEquals(FieldType.O, presenter.gameBoardState[0][1])
@@ -131,10 +119,10 @@ class MainPresenterTest {
     fun givenTakenField_whenClickField_thenDoesnotChangePlayer() {
         presenter.currentPlayerState = FieldType.X
         presenter.gameBoardState =
-                arrayOf(
-                        arrayOf(FieldType.X, FieldType.O, FieldType.O),
-                        arrayOf(FieldType.O, FieldType.NONE, FieldType.NONE),
-                        arrayOf(FieldType.X, FieldType.NONE, FieldType.NONE)
+                listOf(
+                        listOf(FieldType.X, FieldType.O, FieldType.O),
+                        listOf(FieldType.O, FieldType.NONE, FieldType.NONE),
+                        listOf(FieldType.X, FieldType.NONE, FieldType.NONE)
                 )
         presenter.clickField(1)
         Assert.assertEquals(FieldType.X, presenter.currentPlayerState)
@@ -238,5 +226,23 @@ class MainPresenterTest {
                         arrayOf(FieldType.O, FieldType.O, FieldType.X)
                 )
         Assert.assertFalse(presenter.isDraw(gameBoardStateNotDrawFake))
+    }
+
+    @Test
+    fun whenReloadPlayground_thenCleanGameBoardShouldNotChange() {
+        presenter.reloadGameBoard(
+                listOf(
+                        listOf(FieldType.X, FieldType.X, FieldType.O),
+                        listOf(FieldType.O, FieldType.NONE, FieldType.NONE),
+                        listOf(FieldType.X, FieldType.NONE, FieldType.NONE)
+                )
+        )
+
+        val expected = listOf(
+                listOf(FieldType.NONE, FieldType.NONE, FieldType.NONE),
+                listOf(FieldType.NONE, FieldType.NONE, FieldType.NONE),
+                listOf(FieldType.NONE, FieldType.NONE, FieldType.NONE)
+        )
+        Assert.assertEquals(expected, presenter.cleanGameBoard)
     }
 }

@@ -1,13 +1,13 @@
 package io.github.ktalanda.tictactoe
 
 object MainPresenter {
-    var gameBoardState: Array<Array<FieldType>>
+    var gameBoardState: List<List<FieldType>>
     var currentPlayerState: FieldType
 
-    val cleanGameBoard = arrayOf(
-            arrayOf(FieldType.NONE, FieldType.NONE, FieldType.NONE),
-            arrayOf(FieldType.NONE, FieldType.NONE, FieldType.NONE),
-            arrayOf(FieldType.NONE, FieldType.NONE, FieldType.NONE))
+    val cleanGameBoard = listOf(
+            listOf(FieldType.NONE, FieldType.NONE, FieldType.NONE),
+            listOf(FieldType.NONE, FieldType.NONE, FieldType.NONE),
+            listOf(FieldType.NONE, FieldType.NONE, FieldType.NONE))
     private lateinit var view: View
 
     init {
@@ -19,7 +19,7 @@ object MainPresenter {
         this.view = view
     }
 
-    fun reloadGameBoard(playgroundState: Array<Array<FieldType>>) {
+    fun reloadGameBoard(playgroundState: List<List<FieldType>>) {
         if (playgroundState.size != 3) throw ArrayWrongSizeException()
         playgroundState.forEach { if (it.size != 3) throw ArrayWrongSizeException() }
 
@@ -33,7 +33,8 @@ object MainPresenter {
 
         if (gameBoardState[clickedColumn][clickedRow] != FieldType.NONE) return
 
-        gameBoardState[clickedColumn][clickedRow] = currentPlayerState
+        gameBoardState = getUpdatedGameBoardState(clickedColumn, clickedRow, currentPlayerState, gameBoardState)
+
         reloadGameBoard(gameBoardState)
         currentPlayerState = nextPlayer(currentPlayerState)
     }
@@ -75,6 +76,16 @@ object MainPresenter {
 
     fun isDraw(gameBoardState: Array<Array<FieldType>>): Boolean =
             !gameBoardState.any { it.any { it == FieldType.NONE } } && checkWinner(gameBoardState) == FieldType.NONE
+
+    private fun getUpdatedGameBoardState(
+            column: Int,
+            row: Int,
+            type: FieldType,
+            inputGameBoardState: List<List<FieldType>>): List<List<FieldType>> {
+        val gameBoardStateArray = inputGameBoardState.toTypedArray().map { it.toTypedArray() }
+        gameBoardStateArray[column][row] = type
+        return gameBoardStateArray.toList().map { it.toList() }
+    }
 
     interface View {
         fun reloadGameBoard(playgroundViewElements: List<String>)
