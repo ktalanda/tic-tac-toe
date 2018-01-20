@@ -37,6 +37,16 @@ object MainPresenter {
 
         reloadGameBoard(gameBoardState)
         currentPlayerState = nextPlayer(currentPlayerState)
+
+        val winner = checkWinner(gameBoardState)
+        if (winner != FieldType.NONE) {
+            view.showWinner(winner.type)
+            reloadGameBoard(cleanGameBoard)
+        }
+        if (isDraw(gameBoardState)) {
+            view.showDraw()
+            reloadGameBoard(cleanGameBoard)
+        }
     }
 
     fun nextPlayer(player: FieldType): FieldType =
@@ -89,5 +99,7 @@ object MainPresenter {
 
     interface View {
         fun reloadGameBoard(playgroundViewElements: List<String>)
+        fun showWinner(winner: String)
+        fun showDraw()
     }
 }

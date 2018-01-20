@@ -245,4 +245,55 @@ class MainPresenterTest {
         )
         Assert.assertEquals(expected, presenter.cleanGameBoard)
     }
+
+    @Test
+    fun givenWinner_whenClickField_thenShowWinnerInView() {
+        presenter.reloadGameBoard(
+                listOf(
+                        listOf(FieldType.X, FieldType.X, FieldType.NONE),
+                        listOf(FieldType.O, FieldType.NONE, FieldType.NONE),
+                        listOf(FieldType.X, FieldType.NONE, FieldType.NONE)
+                )
+        )
+        presenter.currentPlayerState = FieldType.X
+
+        presenter.clickField(2)
+
+        verify(viewMock, times(0)).showDraw()
+        verify(viewMock, times(1)).showWinner(FieldType.X.type)
+    }
+
+    @Test
+    fun givenDraw_whenClickField_thenShowDrawInView() {
+        presenter.reloadGameBoard(
+                listOf(
+                        listOf(FieldType.NONE, FieldType.X, FieldType.O),
+                        listOf(FieldType.O, FieldType.O, FieldType.X),
+                        listOf(FieldType.X, FieldType.O, FieldType.X)
+                )
+        )
+        presenter.currentPlayerState = FieldType.X
+
+        presenter.clickField(0)
+
+        verify(viewMock, times(1)).showDraw()
+        verify(viewMock, times(0)).showWinner(any())
+    }
+
+    @Test
+    fun givenNotFinished_whenClickField_thenNotInteractWithView() {
+        presenter.reloadGameBoard(
+                listOf(
+                        listOf(FieldType.NONE, FieldType.X, FieldType.O),
+                        listOf(FieldType.NONE, FieldType.O, FieldType.X),
+                        listOf(FieldType.X, FieldType.O, FieldType.X)
+                )
+        )
+        presenter.currentPlayerState = FieldType.X
+
+        presenter.clickField(0)
+
+        verify(viewMock, times(0)).showDraw()
+        verify(viewMock, times(0)).showWinner(any())
+    }
 }
