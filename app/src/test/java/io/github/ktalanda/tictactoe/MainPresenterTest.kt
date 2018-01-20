@@ -139,4 +139,104 @@ class MainPresenterTest {
         presenter.clickField(1)
         Assert.assertEquals(FieldType.X, presenter.currentPlayerState)
     }
+
+    @Test
+    fun givenThreeSameInRow_whenGetWinner_thenReturnsWinner() {
+        val gameBoardStateXWinFake =
+                arrayOf(
+                        arrayOf(FieldType.X, FieldType.X, FieldType.X),
+                        arrayOf(FieldType.O, FieldType.NONE, FieldType.NONE),
+                        arrayOf(FieldType.X, FieldType.NONE, FieldType.NONE)
+                )
+
+        Assert.assertEquals("X should win if it occupies all 3 fields in first row.",
+                FieldType.X, presenter.checkWinner(gameBoardStateXWinFake))
+
+        val gameBoardStateOWinFake =
+                arrayOf(
+                        arrayOf(FieldType.NONE, FieldType.X, FieldType.X),
+                        arrayOf(FieldType.O, FieldType.O, FieldType.O),
+                        arrayOf(FieldType.X, FieldType.NONE, FieldType.NONE)
+                )
+
+        Assert.assertEquals("O should win if it occupies all 3 fields in second row.",
+                FieldType.O, presenter.checkWinner(gameBoardStateOWinFake))
+    }
+
+    @Test
+    fun givenThreeSameInColumn_whenGetWinner_thenReturnsWinner() {
+        val gameBoardStateXWinFake =
+                arrayOf(
+                        arrayOf(FieldType.X, FieldType.O, FieldType.X),
+                        arrayOf(FieldType.X, FieldType.NONE, FieldType.NONE),
+                        arrayOf(FieldType.X, FieldType.NONE, FieldType.NONE)
+                )
+
+        Assert.assertEquals("X should win if it occupies all 3 fields in first column.",
+                FieldType.X, presenter.checkWinner(gameBoardStateXWinFake))
+
+        val gameBoardStateOWinFake =
+                arrayOf(
+                        arrayOf(FieldType.NONE, FieldType.O, FieldType.X),
+                        arrayOf(FieldType.O, FieldType.O, FieldType.X),
+                        arrayOf(FieldType.X, FieldType.O, FieldType.NONE)
+                )
+
+        Assert.assertEquals("O should win if it occupies all 3 fields in second column.",
+                FieldType.O, presenter.checkWinner(gameBoardStateOWinFake))
+    }
+
+    @Test
+    fun givenThreeSameInDiagonal_whenGetWinner_thenReturnsWinner() {
+        val gameBoardStateXWinFake =
+                arrayOf(
+                        arrayOf(FieldType.X, FieldType.O, FieldType.X),
+                        arrayOf(FieldType.X, FieldType.X, FieldType.NONE),
+                        arrayOf(FieldType.O, FieldType.NONE, FieldType.X)
+                )
+
+        Assert.assertEquals("X should win if it occupies all 3 fields in diagonal.",
+                FieldType.X, presenter.checkWinner(gameBoardStateXWinFake))
+
+        val gameBoardStateOWinFake =
+                arrayOf(
+                        arrayOf(FieldType.NONE, FieldType.O, FieldType.O),
+                        arrayOf(FieldType.O, FieldType.O, FieldType.X),
+                        arrayOf(FieldType.O, FieldType.O, FieldType.NONE)
+                )
+
+        Assert.assertEquals("O should win if it occupies all 3 fields in diagonal.",
+                FieldType.O, presenter.checkWinner(gameBoardStateOWinFake))
+    }
+
+    @Test
+    fun givenNoWinner_whenGetWinner_thenReturnsNone() {
+        val gameBoardStateNoneWinFake =
+                arrayOf(
+                        arrayOf(FieldType.NONE, FieldType.X, FieldType.X),
+                        arrayOf(FieldType.O, FieldType.NONE, FieldType.NONE),
+                        arrayOf(FieldType.X, FieldType.NONE, FieldType.NONE)
+                )
+        Assert.assertEquals("NONE should win if no winning conditions are met.",
+                FieldType.NONE, presenter.checkWinner(gameBoardStateNoneWinFake))
+    }
+
+    @Test
+    fun givenAllFieldsTakenAndNoWinner_whenIsDraw_thenReturnsTrue() {
+        val gameBoardStateDrawFake =
+                arrayOf(
+                        arrayOf(FieldType.O, FieldType.X, FieldType.O),
+                        arrayOf(FieldType.O, FieldType.X, FieldType.O),
+                        arrayOf(FieldType.X, FieldType.O, FieldType.X)
+                )
+        Assert.assertTrue(presenter.isDraw(gameBoardStateDrawFake))
+
+        val gameBoardStateNotDrawFake =
+                arrayOf(
+                        arrayOf(FieldType.O, FieldType.X, FieldType.O),
+                        arrayOf(FieldType.O, FieldType.X, FieldType.O),
+                        arrayOf(FieldType.O, FieldType.O, FieldType.X)
+                )
+        Assert.assertFalse(presenter.isDraw(gameBoardStateNotDrawFake))
+    }
 }
